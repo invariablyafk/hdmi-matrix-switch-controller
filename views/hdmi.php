@@ -10,19 +10,33 @@
 	</div>
 	<div class="row hdmi-switch">
 		<div class="col-lg-12 well">
+			<div class="form-group">
+				<label for="">All TVs</label><br>
+				<div class="btn-group">
+				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Unknown <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu">
+				  <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
+					<li><a value="<?php echo 'all' . $i; ?>"><?php echo $input_name; ?></a></li>
+				  <?php endforeach; ?>
+				  </ul>
+				</div>
+			</div>
+			<hr>
 			<?php foreach($tvs as $tv): ?>
 			<div class="form-group">
 				<label for=""><?php echo $tv['name']; ?></label><br>
-				<div class="btn-group" role="group">
-					<?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
-					<button type="button" class="btn btn-default <?php echo ($input_slug == $tv['selected']) ? 'btn-primary' : ''; ?> <?php echo $tv['slug'] . $i; ?>" value="<?php echo $tv['slug'] . $i; ?>"><?php echo $input_name; ?></button>
-					<?php endforeach; ?>
+				<div class="btn-group">
+				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Unknown <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu">
+				  <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
+					<li><a value="<?php echo $tv['slug'] . $i; ?>"><?php echo $input_name; ?></a></li>
+				  <?php endforeach; ?>
+				  </ul>
 				</div>
-				
-				
-
-				
-				
 			</div>
 			<?php endforeach; ?>
 		</div>

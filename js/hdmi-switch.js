@@ -10,31 +10,24 @@ updateSwitchStatus = function(){
 				$(selector).addClass('btn-primary');
 			}
 		});
-		
 	});
 };
 
-
 $( document ).ready(function() {
-    console.log( "ready!" );
-    
-    var btnPress = function(){
-    	$(this).parent().children('.btn').removeClass('btn-primary');
-    	
-    	
-    	var command = $(this).val();
+
+    var menuPress = function(){
+    	var command = $(this).attr('value');
     	var me = this;
-    	
-    	
+
+		$(me).parents('.btn-group').children('.btn').html($(me).html()+' <span class="caret"></span>');	  	
+ 	    
     	$.get( "./hdmi/set/"+command, function( data ) {
-		  $(me).addClass('btn-primary');
 		  console.log('Switch to Input: ' + command);
 		});
     };
-    
-    $('.hdmi-switch .btn-group .btn').click(btnPress);
-    //$('.hdmi-switch .btn-group .btn').on('touchend', btnPress);
-    
+
+    $('.hdmi-switch .btn-group .dropdown-menu li a').click(menuPress);
+    //$('.hdmi-switch .btn-group .dropdown-menu li a').on('touchend', btnPress);
     
     // setInterval(function(){ updateSwitchStatus(); }, 1000);
 });
