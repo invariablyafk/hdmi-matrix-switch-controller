@@ -167,6 +167,20 @@ class HDMIMatrixSwitch {
 			case "d4";
 				exec("./command-line-tools/hdmi-matrix 4 4"); // TV d SELECT input4  
 				break;
+
+			case "all1";
+				exec("./command-line-tools/hdmi-matrix 1"); // TV ALL SELECT inputl 
+				break;
+			case "all2";
+				exec("./command-line-tools/hdmi-matrix 2"); // TV ALL SELECT input2 
+				break;
+			case "all3";
+				exec("./command-line-tools/hdmi-matrix 3"); // TV ALL SELECT input3 
+				break;
+			case "all4";
+				exec("./command-line-tools/hdmi-matrix 4"); // TV ALL SELECT input4  
+				break;
+
 		
 			case "pwr";
 				//$commandBytes = array(0x10, 0xef, 0xd5, 0x7b); // power cycle 
