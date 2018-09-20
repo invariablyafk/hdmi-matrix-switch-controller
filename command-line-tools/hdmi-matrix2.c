@@ -12,7 +12,7 @@ compile with the command: gcc hdmi-matrix2.c rs232.c -Wall -Wextra -o2 -o hdmi_m
 
 void changeInput(int cport_nr, char commands[16][13], int inputToSelect, int tvToSelect){
 	int i=0;
-	while(i < 4){
+	while(i < 13){
 		RS232_SendByte(cport_nr, commands[(tvToSelect * 4) + inputToSelect][i]);
 		usleep(30000);		// 30 microseconds (ms)
 		i++;
