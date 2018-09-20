@@ -6,7 +6,7 @@ class HdmiController extends AppController
 {
 	public function actionIndex()
 	{
-
+	
 		$viewVars = array(
 			'tvs' => array(
 				'TV_A' => array(
@@ -23,17 +23,17 @@ class HdmiController extends AppController
 				),
 				'TV_D' => array(
 					'slug'     => 'd',
-					'name'     => 'Bedroom TV - Side TV'
+					'name'     => 'Bedroom TV show- Side TV'
 				)
 			),
 			'inputs' => array(
 				'Input 1' => 'Xbox One S',
-				'Input 2' => 'Playstation 4',
-				'Input 3' => 'Chromecast',
-				'Input 4' => 'BMO'
+				'Input 2' => 'Xbox One',
+				'Input 3' => 'Cromecast',
+				'Input 4' => 'Apple TV / AUX'
 			)
 		);
-
+		
 		$hdmiSwitch = new HDMIMatrixSwitch();
 		$status = @$hdmiSwitch->getStatus();
 		if(is_array($status)){
@@ -42,28 +42,28 @@ class HdmiController extends AppController
 				$viewVars['tvs'][$tv_slug]['selected'] = $input;
 			}
 		}
-
+		
 		$this->setVars($viewVars);
-
+		
 		$this->loadView('hdmi');
 	}
-
+	
 	public function actionStatus(){
-
+	
 		$this->layout = false;
-
+		
 		$hdmiSwitch = new HDMIMatrixSwitch();
 		echo json_encode( @$hdmiSwitch->getStatus() );
 		die();
-
+	
 	}
-
+	
 	public function actionSet($command){
 		$this->layout = false;
-
+		
 		$hdmiSwitch = new HDMIMatrixSwitch();
 		$hdmiSwitch->sendCommand($command);
-
+		
 		die('Sent');
 	}
 }
