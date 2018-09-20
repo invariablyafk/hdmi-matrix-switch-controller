@@ -3,7 +3,7 @@
 class HDMIMatrixSwitch {
 
 	protected $serialPort = "/dev/cu.usbserial-ftDIDIW0";
-	
+
 	protected $scanningInPacket = false;
 	protected $packet           = "";
 	protected $packetHeader     = 0x61;
@@ -26,12 +26,12 @@ class HDMIMatrixSwitch {
 				break;
 		}
 	}
-	
+
 	private function decodePacket($packet){
-	
+
 		$decodedData = array();
 		$packet = str_split($packet);
-	
+
 		// Verify Header
 		if(	$packet[0] != chr( $this->packetHeader )){
 			return "Invalid Header";
@@ -47,23 +47,23 @@ class HDMIMatrixSwitch {
 
 		// Read TV B - Input
 		$decodedData['TV_B']        = $this->decodeInputValue( $packet[6] );
-	
+
 		// Read TV C - Input
 		$decodedData['TV_C']        = $this->decodeInputValue( $packet[7] );
-	
+
 		// Read TV D - Input
 		$decodedData['TV_D']        = $this->decodeInputValue( $packet[8] );
 
 		// Read Power Status
 		$decodedData['Power']		= ($packet[10] == chr( 0x1 )) ? "On" : "Standby";
-	
+
 		return $decodedData;
 	}
 
 	public function getStatus() {
 
 		return [];
-		
+
 		/*
 
 		// Connect to serial port.
@@ -77,7 +77,7 @@ class HDMIMatrixSwitch {
 			if($byte == chr( $this->packetHeader )){
 				$scanningInPacket = true;
 			}
-	
+
 			if($scanningInPacket){
 				$packet .= $byte;
 				if(strlen($packet) >= $this->packetLength){
@@ -88,16 +88,16 @@ class HDMIMatrixSwitch {
 				}
 			}
 		}
-		
+
 		if($this->serialFileHandle)
 			fclose($this->serialFileHandle);
-		
+
 		return $returnVal;
-		
+
 		*/
 
 	}
-	
+
 	public function sendCommand($command) {
 
 		/*
@@ -114,76 +114,76 @@ class HDMIMatrixSwitch {
 		switch(strtolower($command)){
 
 			case "a1";
-				exec("./command-line-tools/hdmi-matrix 1 1"); // TV a SELECT inputl 
+				exec("./command-line-tools/hdmi_matrix2 1 1"); // TV a SELECT inputl
 				break;
 			case "a2";
-				exec("./command-line-tools/hdmi-matrix 1 2"); // TV a SELECT input2 
+				exec("./command-line-tools/hdmi_matrix2 1 2"); // TV a SELECT input2
 				break;
 			case "a3";
-				exec("./command-line-tools/hdmi-matrix 1 3"); // TV a SELECT input3 
+				exec("./command-line-tools/hdmi_matrix2 1 3"); // TV a SELECT input3
 				break;
 			case "a4";
-				exec("./command-line-tools/hdmi-matrix 1 4"); // TV a SELECT input4 
+				exec("./command-line-tools/hdmi_matrix2 1 4"); // TV a SELECT input4
 				break;
-		
-	
+
+
 			case "b1";
-				exec("./command-line-tools/hdmi-matrix 2 1"); // TV b SELECT inputl 
+				exec("./command-line-tools/hdmi_matrix2 2 1"); // TV b SELECT inputl
 				break;
 			case "b2";
-				exec("./command-line-tools/hdmi-matrix 2 2"); // TV b SELECT input2 
+				exec("./command-line-tools/hdmi_matrix2 2 2"); // TV b SELECT input2
 				break;
 			case "b3";
-				exec("./command-line-tools/hdmi-matrix 2 3"); // TV b SELECT input3 
+				exec("./command-line-tools/hdmi_matrix2 2 3"); // TV b SELECT input3
 				break;
 			case "b4";
-				exec("./command-line-tools/hdmi-matrix 2 4"); // TV b SELECT input4 
+				exec("./command-line-tools/hdmi_matrix2 2 4"); // TV b SELECT input4
 				break;
-		
-		
+
+
 			case "c1";
-				exec("./command-line-tools/hdmi-matrix 3 1"); // TV c SELECT inputl 
+				exec("./command-line-tools/hdmi_matrix2 3 1"); // TV c SELECT inputl
 				break;
 			case "c2";
-				exec("./command-line-tools/hdmi-matrix 3 2"); // TV c SELECT input2 
+				exec("./command-line-tools/hdmi_matrix2 3 2"); // TV c SELECT input2
 				break;
 			case "c3";
-				exec("./command-line-tools/hdmi-matrix 3 3"); // TV c SELECT input3 
+				exec("./command-line-tools/hdmi_matrix2 3 3"); // TV c SELECT input3
 				break;
 			case "c4";
-				exec("./command-line-tools/hdmi-matrix 3 4"); // TV c SELECT input4 
+				exec("./command-line-tools/hdmi_matrix2 3 4"); // TV c SELECT input4
 				break;
-		
-		
+
+
 			case "d1";
-				exec("./command-line-tools/hdmi-matrix 4 1"); // TV d SELECT inputl 
+				exec("./command-line-tools/hdmi_matrix2 4 1"); // TV d SELECT inputl
 				break;
 			case "d2";
-				exec("./command-line-tools/hdmi-matrix 4 2"); // TV d SELECT input2 
+				exec("./command-line-tools/hdmi_matrix2 4 2"); // TV d SELECT input2
 				break;
 			case "d3";
-				exec("./command-line-tools/hdmi-matrix 4 3"); // TV d SELECT input3 
+				exec("./command-line-tools/hdmi_matrix2 4 3"); // TV d SELECT input3
 				break;
 			case "d4";
-				exec("./command-line-tools/hdmi-matrix 4 4"); // TV d SELECT input4  
+				exec("./command-line-tools/hdmi_matrix2 4 4"); // TV d SELECT input4
 				break;
 
 			case "all1";
-				exec("./command-line-tools/hdmi-matrix 1"); // TV ALL SELECT inputl 
+				exec("./command-line-tools/hdmi_matrix2 1"); // TV ALL SELECT inputl
 				break;
 			case "all2";
-				exec("./command-line-tools/hdmi-matrix 2"); // TV ALL SELECT input2 
+				exec("./command-line-tools/hdmi_matrix2 2"); // TV ALL SELECT input2
 				break;
 			case "all3";
-				exec("./command-line-tools/hdmi-matrix 3"); // TV ALL SELECT input3 
+				exec("./command-line-tools/hdmi_matrix2 3"); // TV ALL SELECT input3
 				break;
 			case "all4";
-				exec("./command-line-tools/hdmi-matrix 4"); // TV ALL SELECT input4  
+				exec("./command-line-tools/hdmi_matrix2 4"); // TV ALL SELECT input4
 				break;
 
-		
+
 			case "pwr";
-				//$commandBytes = array(0x10, 0xef, 0xd5, 0x7b); // power cycle 
+				//$commandBytes = array(0x10, 0xef, 0xd5, 0x7b); // power cycle
 				break;
 
 		}
@@ -197,7 +197,7 @@ class HDMIMatrixSwitch {
 		}
 
 		fclose($this->serialFileHandle);
-		
+
 		*/
 	}
 
