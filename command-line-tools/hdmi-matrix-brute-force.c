@@ -28,13 +28,10 @@ void changeInput(int cport_nr, unsigned char commands[16][13], int inputToSelect
 
 		i++;
 	}
-
+	
 	checksum = 0x100 - checksum;
-
- 	printf("\n");
-//
-// 	printf("CHK: %X\n", checksum);
-
+	printf("CHK: %02hhX\n", checksum);
+	
 }
 
 void changeAllToInput(int cport_nr, unsigned char commands[16][13], int inputToSelect){
@@ -53,7 +50,7 @@ int loop(int cport_nr, unsigned char* buf, int commandByteCount, int* checksum){
     n = RS232_PollComport(cport_nr, buf, 4095);
 
     if(commandByteCount == 0){
-    	printf("Response From HDMI Matrix: \t\t");
+    	// printf("Response From HDMI Matrix: \t\t");
     }
 
 	if(n > 0)
@@ -62,7 +59,7 @@ int loop(int cport_nr, unsigned char* buf, int commandByteCount, int* checksum){
 
 		for(i=0; i < n; i++)
 		{
-			printf("%02hhX ", buf[i]);
+			// printf("%02hhX ", buf[i]);
 
 			if(buf[i] < 32)  /* replace unreadable control-codes by dots */
 			{
