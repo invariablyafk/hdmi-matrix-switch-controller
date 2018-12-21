@@ -10,129 +10,100 @@ compile with the command: gcc hdmi-matrix-brute-force.c rs232.c -Wall -Wextra -o
 #include <unistd.h>
 #include "rs232.h"
 
-void changeInput(int cport_nr, unsigned char commands[16][13], int inputToSelect, int tvToSelect){
+void changeInput(int cport_nr, int inputToSelect, int tvToSelect){
 	int i=0, checksum=0;
+	
+	int commandHeader[4] = {0xA5, 0x5B, 0x02, 0x03};
+	int currentByte;
 
-	printf("Send Command Input %d > Output %d.\t", inputToSelect+1, tvToSelect+1);
+	printf("Send Command Input %d > Output %d.\t", inputToSelect, tvToSelect);
 
 	while(i < 13){
-		RS232_SendByte(cport_nr, commands[(tvToSelect * 4) + inputToSelect][i]);
-
-		printf("%02hhX ", commands[(tvToSelect * 4) + inputToSelect][i]);
-
-		usleep(30000);		// 30 microseconds (ms)
+	
+		currentByte = 0x00;
+		
+		if(i < 4){
+			currentByte = commandHeader[i];
+		}
+		
+		if(i == 4){
+			currentByte = inputToSelect;
+		}
+		
+		if(i == 6){
+			currentByte = tvToSelect;
+		}
 
 		if(i < 12){
-			checksum += commands[(tvToSelect * 4) + inputToSelect][i];
+			checksum += currentByte;
 		}
+		
+		if(i == 12){
+			currentByte = (0x100 - checksum);
+		}
+	
+		RS232_SendByte(cport_nr, currentByte);
+
+		printf("%02hhX ", currentByte);
 
 		i++;
 	}
-	
-	checksum = 0x100 - checksum;
-	printf("CHK: %02hhX\n", checksum);
-	
+
+	printf("\n");	
+
 }
 
-void changeAllToInput(int cport_nr, unsigned char commands[16][13], int inputToSelect){
-	int i = 0;
-	while(i < 4){
-		changeInput(cport_nr, commands, inputToSelect, i);
-		usleep(500000);  /* sleep for 1/2 Second */
+void changeAllToInput(int cport_nr, int inputToSelect){
+	int i = 1;
+	while(i <= 8){
+		changeInput(cport_nr, inputToSelect, i);
+		usleep(300000); // Sleep 1/3 second
 		i++;
 	}
 }
 
-int loop(int cport_nr, unsigned char* buf, int commandByteCount, int* checksum){
-
-	int n, i;
-
-    n = RS232_PollComport(cport_nr, buf, 4095);
-
-    if(commandByteCount == 0){
-    	// printf("Response From HDMI Matrix: \t\t");
-    }
-
-	if(n > 0)
-	{
-		buf[n] = 0;   /* always put a "null" at the end of a string! */
-
-		for(i=0; i < n; i++)
-		{
-			// printf("%02hhX ", buf[i]);
-
-			if(buf[i] < 32)  /* replace unreadable control-codes by dots */
-			{
-				buf[i] = '.';
-			}
-
-			if((commandByteCount + i) < 11){
-				*checksum = *checksum + buf[i];
-			}
-
-			if((commandByteCount+i) == 12){
-				//printf("\nResp. Checksum Add: %02hhX ",   *checksum);
-// 				printf("CHK: %02hhX", 0x100 - *checksum);
-// 				printf(", %02hhX",    0x121 - *checksum);
-// 				printf(", %02hhX",    0xB8  - *checksum);
-// 				printf(", %02hhX",    0xBB  - *checksum);
-// 				printf(" [%02hhX]\n",  *checksum);
-				printf("\n");
-				*checksum = 0;
-				commandByteCount = 0;
-			}
-
-		}
-
-		//printf("\nReceived9 %i bytes: %s\n", n, (char *)buf);
-
-
+void handleResponse(unsigned char response[13]){
+	printf("Response From HDMI Matrix: \t\t");
+	for(int i = 0; i < 13; i++){
+		printf("%02hhX ", response[i]);
 	}
+	printf("\n");
+}
 
-    return commandByteCount + n;
+void loop(int cport_nr, unsigned char* buf){
+
+	int i = 0,
+	numOfBytesInBuffer = 0;
+	unsigned char response[13];
+
+	while(i < 1000){
+	
+		numOfBytesInBuffer = RS232_PollComport(cport_nr, buf, 4095);
+		
+		for(int j = 0; j < numOfBytesInBuffer; j++){
+			i = i + j;
+			if(i >= 12){
+				i = 0;
+				handleResponse(response);
+			}
+			response[i] = buf[j];
+		}
+		usleep(300);
+		i++;
+	}
 
 }
 
 int main(int argc, char* argv[])
 {
-	int cport_nr=34,        /* /dev/cuaU0 (first serial on FreeBSD) */
+	int cport_nr=34,          /* /dev/cuaU0 (first serial on FreeBSD) */
 	    bdrate=115200,        /* 115200 baud */
 	    tvToSelect=-1,
-	    inputToSelect=-1,
-	    commandByteCount = 0,
-	    checksum = 0,
-	    i = 0;
+	    inputToSelect=-1;
 
 	unsigned char buf[4096];
 
 	char mode[]={'8','N','1',0};
-
-	unsigned char commands[16][13]={
-
-	//	{0xA5, 0x5B, 0x02, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFC}, // Port Switch Query for Output 1
-	//	{0xA5, 0x5B, 0x01, 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFA}, // Port Switch Query for Input 1
-
-
-        {0xA5, 0x5B, 0x02, 0x03, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF9}, // Switch Input 1, to Output 1
-        {0xA5, 0x5B, 0x02, 0x03, 0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF8}, // Switch Input 2, to Output 1
-        {0xA5, 0x5B, 0x02, 0x03, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF7}, // Switch Input 3, to Output 1
-        {0xA5, 0x5B, 0x02, 0x03, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF6}, // Switch Input 4, to Output 1
-
-        {0xA5, 0x5B, 0x02, 0x03, 0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF8}, // Switch Input 1, to Output 2
-        {0xA5, 0x5B, 0x02, 0x03, 0x02, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF7}, // Switch Input 2, to Output 2
-        {0xA5, 0x5B, 0x02, 0x03, 0x03, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF6}, // Switch Input 3, to Output 2
-        {0xA5, 0x5B, 0x02, 0x03, 0x04, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF5}, // Switch Input 4, to Output 2
-
-        {0xA5, 0x5B, 0x02, 0x03, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF7}, // Switch Input 1, to Output 3
-        {0xA5, 0x5B, 0x02, 0x03, 0x02, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF6}, // Switch Input 2, to Output 3
-        {0xA5, 0x5B, 0x02, 0x03, 0x03, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF5}, // Switch Input 3, to Output 3
-        {0xA5, 0x5B, 0x02, 0x03, 0x04, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF4}, // Switch Input 4, to Output 3
-
-        {0xA5, 0x5B, 0x02, 0x03, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF6}, // Switch Input 1, to Output 4
-        {0xA5, 0x5B, 0x02, 0x03, 0x02, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF5}, // Switch Input 2, to Output 4
-        {0xA5, 0x5B, 0x02, 0x03, 0x03, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF4}, // Switch Input 3, to Output 4
-        {0xA5, 0x5B, 0x02, 0x03, 0x04, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF3}  // Switch Input 4, to Output 4
-	};
 
 	if(argc <= 1){
 		printf("Requires at least one input.\n");
@@ -140,20 +111,20 @@ int main(int argc, char* argv[])
 	}
 
 	if(argc == 2){
-		inputToSelect = atoi(argv[1]) - 1;
+		inputToSelect = atoi(argv[1]);
 	}
 
 	if(argc >= 3){
-		tvToSelect    = atoi(argv[1]) - 1;
-		inputToSelect = atoi(argv[2]) - 1;
-		if(tvToSelect < 0 || tvToSelect > 3){
-			printf("Only TV values of 1-4 are supported.\n");
+		tvToSelect    = atoi(argv[1]);
+		inputToSelect = atoi(argv[2]);
+		if(tvToSelect < 1 || tvToSelect > 8){
+			printf("Only TV values of 1-8 are supported.\n");
 			return(1);
 		}
 	}
 
-	if(inputToSelect < 0 || inputToSelect > 3){
-		printf("Only input values of 1-4 are supported.\n");
+	if(inputToSelect < 1 || inputToSelect > 8){
+		printf("Only input values of 1-8 are supported.\n");
 		return(1);
 	}
 
@@ -162,24 +133,14 @@ int main(int argc, char* argv[])
 		return(0);
 	}
 
-	// usleep(500000);  /* sleep for 1/2 Second */
-
 	if(tvToSelect >= 0){
-		changeInput(cport_nr, commands, inputToSelect, tvToSelect);
+		changeInput(cport_nr, inputToSelect, tvToSelect);
 	} else
-		changeAllToInput(cport_nr, commands, inputToSelect);
+		changeAllToInput(cport_nr, inputToSelect);
 
-	while(i < 1000){
-		commandByteCount = loop(cport_nr, buf, commandByteCount, &checksum);
-		usleep(300);
-		i++;
-	}
+	loop(cport_nr, buf);
 
-    usleep(500000);  /* sleep for 1/2 Second */
-
-	printf("\n");
-
-  return(0);
+	return(0);
 }
 
 
