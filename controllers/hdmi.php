@@ -28,8 +28,8 @@ class HdmiController extends AppController
 			),
 			'inputs' => array(
 				'Input 1' => 'Xbox One S',
-				'Input 2' => 'Playstation 4',
-				'Input 3' => 'Chromecast',
+				'Input 2' => 'Xbox One Classic',
+				'Input 3' => 'Playstation 4',
 				'Input 4' => 'BMO'
 			)
 		);
