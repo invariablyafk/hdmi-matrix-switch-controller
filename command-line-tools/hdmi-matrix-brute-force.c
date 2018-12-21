@@ -99,7 +99,7 @@ int loop(int cport_nr, unsigned char* buf, int commandByteCount, int* checksum){
 int main(int argc, char* argv[])
 {
 	int cport_nr=34,        /* /dev/cuaU0 (first serial on FreeBSD) */
-	    bdrate=19200,        /* 19200 baud */
+	    bdrate=115200,        /* 115200 baud */
 	    tvToSelect=-1,
 	    inputToSelect=-1,
 	    commandByteCount = 0,
