@@ -9,28 +9,24 @@ class HdmiController extends AppController
 
 		$viewVars = array(
 			'tvs' => array(
-				'TV_01' => array(
-					'slug'     => 'a',
+				'a' => array(
 					'name'     => 'Living Room - Main TV'
 				),
-				'TV_02' => array(
-					'slug'     => 'b',
+				'b' => array(
 					'name'     => 'Living Room - Side TV'
 				),
-				'TV_03' => array(
-					'slug'     => 'c',
+				'c' => array(
 					'name'     => 'Bedroom TV'
 				),
-				'TV_04' => array(
-					'slug'     => 'd',
+				'd' => array(
 					'name'     => 'Bedroom TV - Side TV'
 				)
 			),
 			'inputs' => array(
-				'Input 1' => 'Xbox One S',
-				'Input 2' => 'Xbox One Classic',
-				'Input 3' => 'Playstation 4',
-				'Input 4' => 'BMO'
+				'1' => 'Xbox One S',
+				'2' => 'Xbox One Classic',
+				'3' => 'Playstation 4',
+				'4' => 'BMO'
 			)
 		);
 

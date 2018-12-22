@@ -12,32 +12,23 @@
 		<div class="col-lg-12 well">
 			<div class="form-group">
 				<label for="">All TVs</label><br>
-				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Unknown <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu">
-				  <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
-					<li><a value="<?php echo 'all' . $i; ?>"><?php echo $input_name; ?></a></li>
-				  <?php endforeach; ?>
-				  </ul>
-				</div>
+                <select class="form-control" data-tv-slug="all">
+                    <option value="-1">Select Input</option>
+                    <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
+                    <option value="<?php echo $input_slug; ?>"><?php echo $input_name; ?></option>
+                    <?php endforeach; ?>
+                </select>
 			</div>
 			<hr>
-			<?php foreach($tvs as $tv): ?>
+			<?php foreach($tvs as $tv_value => $tv): ?>
 			<div class="form-group">
 				<label for=""><?php echo $tv['name']; ?></label><br>
-				<div class="btn-group">
-				  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Unknown <span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu">
-				  <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
-					<li><a value="<?php echo $tv['slug'] . $i; ?>"><?php echo $input_name; ?></a></li>
-				  <?php endforeach; ?>
-				  </ul>
-				</div>
-			</div>
+                <select class="form-control tv_<?php echo $tv_value ?>" data-tv-slug="<?php echo $tv_value ?>">
+                    <option value="-1">Select Input</option>
+                    <?php $i = 0; foreach($inputs as $input_slug => $input_name): $i++; ?>
+                    <option value="<?php echo $input_slug; ?>"><?php echo $input_name; ?></option>
+                    <?php endforeach; ?>
+                </select>			</div>
 			<?php endforeach; ?>
 		</div>
 	</div>
