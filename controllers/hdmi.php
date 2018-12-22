@@ -9,19 +9,19 @@ class HdmiController extends AppController
 
 		$viewVars = array(
 			'tvs' => array(
-				'TV_A' => array(
+				'TV_01' => array(
 					'slug'     => 'a',
 					'name'     => 'Living Room - Main TV'
 				),
-				'TV_B' => array(
+				'TV_02' => array(
 					'slug'     => 'b',
 					'name'     => 'Living Room - Side TV'
 				),
-				'TV_C' => array(
+				'TV_03' => array(
 					'slug'     => 'c',
 					'name'     => 'Bedroom TV'
 				),
-				'TV_D' => array(
+				'TV_04' => array(
 					'slug'     => 'd',
 					'name'     => 'Bedroom TV - Side TV'
 				)
@@ -34,17 +34,7 @@ class HdmiController extends AppController
 			)
 		);
 
-		$hdmiSwitch = new HDMIMatrixSwitch();
-		$status = @$hdmiSwitch->getStatus();
-		if(is_array($status)){
-			foreach($status as $tv_slug => $input){
-				if($tv_slug != 'Power')
-				$viewVars['tvs'][$tv_slug]['selected'] = $input;
-			}
-		}
-
 		$this->setVars($viewVars);
-
 		$this->loadView('hdmi');
 	}
 

@@ -1,12 +1,13 @@
 
 updateSwitchStatus = function(){
-	$.getJSON( "./status/", function( data ) {
+	$.getJSON( "/hdmi/status/", function( data ) {
 		$('.hdmi-switch .btn-group .btn').removeClass('btn-primary');
 		$.each(data, function( key, input ) {
 			var underscore_pos = key.indexOf("_")
 			if(underscore_pos > -1){
 				var tv = key.charAt(underscore_pos + 1);
 				var selector = '.hdmi-switch .btn-group .btn.' + tv.toLowerCase() + input.replace("Input ", "");
+				console.log(selector);
 				$(selector).addClass('btn-primary');
 			}
 		});
