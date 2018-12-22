@@ -1,7 +1,7 @@
 
 /**************************************************
 
-compile with the command: gcc hdmi-matrix-brute-force.c rs232.c -Wall -Wextra -o2 -o hdmi-matrix-brute-force
+compile with the command: gcc hdmi-matrix-8x8.c rs232.c -Wall -Wextra -o2 -o hdmi-matrix-8x8
 
 **************************************************/
 
@@ -95,8 +95,6 @@ void queryTv(int cport_nr, int tvToSelect){
 	usleep(500000); // Sleep 1/2 second
 
 }
-
-
 
 void changeAllToInput(int cport_nr, int inputToSelect){
 	int i = 1;
