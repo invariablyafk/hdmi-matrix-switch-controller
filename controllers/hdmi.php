@@ -68,9 +68,14 @@ class HdmiController extends AppController
 		$hdmiSwitch = new HDMIMatrixSwitch();
 		$hdmiSwitch->sendCommand($command);
 
-        unlink("inputs.json");
+        file_put_contents("inputs.json", json_encode( false ));
 
-		die('Sent');
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+            die(json_encode(true));
+        }
+
+        header("Location: /");
+
 	}
 }
 

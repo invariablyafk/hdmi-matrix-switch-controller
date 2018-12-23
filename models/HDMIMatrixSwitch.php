@@ -11,19 +11,19 @@ class HDMIMatrixSwitch {
 
 
         $command = strtolower(trim($command));
-        
+
         if(strlen($command) == 2){
             $tv    = intval(ord($command[0]) - ord('a') + 1);
             $input = intval($command[1]);
             exec("./command-line-tools/hdmi-matrix-8x8 $tv $input", $output); // set single Input
         }
-        
+
         if(strlen($command) == 4){
             $input = intval($command[3]);
             exec("./command-line-tools/hdmi-matrix-8x8 $input", $output); // set all inputs
         }
 
-        print_r($output);
+        //print_r($output);
 
 	}
 
