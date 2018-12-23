@@ -19,14 +19,18 @@ class HdmiController extends AppController
 					'name'     => 'Bedroom TV'
 				),
 				'd' => array(
-					'name'     => 'Bedroom TV - Side TV'
+					'name'     => 'Office TV'
 				)
 			),
 			'inputs' => array(
 				'1' => 'Xbox One S',
 				'2' => 'Xbox One Classic',
 				'3' => 'Playstation 4',
-				'4' => 'BMO'
+				'6' => 'Playstation 3',
+				'7' => 'Chromecast',
+				'5' => 'Raspberry Pi',
+				'4' => 'BMO',
+				'8' => 'Other'
 			)
 		);
 
