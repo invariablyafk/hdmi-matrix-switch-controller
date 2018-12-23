@@ -26,7 +26,7 @@ $( document ).ready(function() {
         var command       = $(this).attr('href');
         var inputLabel    = $(this).html();
         var newLabelHtml  = inputLabel + ' <span class="caret"></span>';
-        var loadLabelHtml = inputLabel + ' <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>';
+        var loadLabelHtml = inputLabel + ' <span class="glyphicon glyphicon-refresh spin" aria-hidden="true"></span>';
         var labelElement  = $(this).parents('ul').prev();
 
         labelElement.html(loadLabelHtml);
