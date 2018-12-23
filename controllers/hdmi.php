@@ -42,8 +42,22 @@ class HdmiController extends AppController
 
 		$this->layout = false;
 
+        if(file_exists("inputs.json")){
+            $data    = json_decode(file_get_contents("inputs.json"), true);
+            $elapsed = time() - $data['timestamp'];
+            if($elapsed < 30){
+                unset($data['timestamp']);
+                echo json_encode($data);
+                die();
+            }
+        }
+
 		$hdmiSwitch = new HDMIMatrixSwitch();
-		echo json_encode( @$hdmiSwitch->getStatus() );
+		$data = @$hdmiSwitch->getStatus();
+        $data['timestamp'] = time();
+		file_put_contents("inputs.json", json_encode( $data ));
+		unset($data['timestamp']);
+		echo json_encode( $data );;
 		die();
 
 	}
@@ -53,6 +67,8 @@ class HdmiController extends AppController
 
 		$hdmiSwitch = new HDMIMatrixSwitch();
 		$hdmiSwitch->sendCommand($command);
+
+        unlink("inputs.json");
 
 		die('Sent');
 	}
